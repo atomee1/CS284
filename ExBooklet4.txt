@@ -1,0 +1,365 @@
+Exercise 1)
+1. (a) is not full + not perfect + not complete, (b) is full + perfect + complete, (c) is not full + perfect + complete
+2. Height of (a) = 4, of (b) = 2, of (c) = 2
+3. 12, 10, 7
+4. Levels of (a) = 5, of (b) = 3, of (c) = 3
+5. (a) and (b) are BSTs
+6. False
+
+Exercise 2)
+(a):
+Node(7, Node(1, 0, Node(3, 2, Node(5, 4, 6))), Node(10, Empty, Node(12, 11, 13))
+(b):
+Node(3, Node(1, 0, 2), Node(5, 4, 6))
+(c):
+Node(13, Node(8, 0, 5), Node(25, 30, Empty))
+
+Exercise 3)
+Base case: When h = 0, perfect binary tree has 2^0 - 1 = 0 nodes
+Inductive step: Perfect tree of height h + 1 should have 2^(h + 1) - 1 nodes
+Proof: 2^h + 2^h - 1 = 2(2^h) - 1 = 2^(h + 1) - 1
+
+Exercise 4)
+n = 2^h - 1, solve for h
+n + 1 = 2^h
+h = log2(n + 1)
+f(n) = log2(n + 1)
+
+Exercise 5)
+Base case: When h = 0, perfect binary tree has 2^(0 - 1) = .5 leaves
+Inductive step: Perfect tree of height h + 1 should have 2^h leaves
+Proof: 2(2^(h - 1)) = 2^h
+
+Exercise 6)
+h = log2(n + 1), l = 2^h
+l = 2^(log2(n + 1))
+
+Exercise 7)
+Minimum number of nodes in full binary tree of height h = number of nodes when only two leaves with same ancestry exist in last level = 2^(h - 1)
+Maximum number of nodes in full binary tree of height h = number of nodes in perfect binary tree of height h = 2^h - 1
+
+Exercise 8)
+public int height(TreeNode node) {
+     if (node == null) {
+          return 0;
+     } else {
+          int lHeight = height(node.left);
+          int rHeight = height(node.right);
+          return Math.max(lHeight, rHeight) + 1;
+     }
+}
+
+public int no_of_nodes(TreeNode node) {
+     if (node == null) {
+          return 0;
+     } else {
+          return 1 + no_of_nodes(node.left) + no_of_nodes(node.right);
+     }
+}
+
+public boolean is_leaf(TreeNode node) {
+     return (node.left == null && node.right == null;
+}
+
+public int no_of_leaves(TreeNode node) {
+     if (node == null) {
+          return 0;
+     } else if (is_leaf(node)) {
+          return 1;
+     } else {
+          return no_of_leaves(node.left) + no_of_leaves(node.right);
+     }
+}
+
+public boolean is_full(TreeNode node) {
+     if (node == null) {
+          return true;
+     }
+
+     if (is_leaf(node)) {
+          return true;
+     }
+
+     if (node.left != null && node.right != null) {
+          return is_full(node.left) && is_full(node.right);
+     }
+
+     return false;
+
+public boolean is_balanced(TreeNode node) {
+     if (node == null) {
+          return true;
+     }
+
+     int lHeight = height(node.left);
+     int rHeight = height(node.right);
+
+     if (Math.abs(lHeight - rHeight) <= 1 && is_balanced(node.left) && is_balanced(node.right)) {
+          return true;
+     }
+
+     return false;
+
+public boolean is_perfect_helper(TreeNode node, int level, int depth) {
+     if (node == null) {
+          return true;
+     }
+
+     if (is_leaf(node)) {
+          return depth == level + 1;
+     }
+
+     if (node.left == null || node.right == null) {
+          return false;
+     }
+
+     return is_perfect(node.left, level + 1, depth) && is_perfect(node.right, level + 1, depth);
+
+public boolean is_perfect(TreeNode node) {
+     int depth = height(node);
+
+     return is_perfect(node, 0, depth);
+
+Exercise 9)
+public BinaryTree<E> cloneAt(Node<E> current) {
+     if (current == null) {
+          return new BinaryTree<E>();
+     }
+
+     if (current.isLeaf()) {
+          return new BinaryTree<E>(current.data);
+     }
+
+     return new BinaryTree<E>(current.data, cloneAt(current.left), cloneAt(current.right));
+
+Exercise 10)
+public BinaryTree<E> makeBinTree(int val) {
+     BinaryTree<E> tree = new BinaryTree<E>();
+     tree.val = val;
+     tree.left = null;
+     tree.right = null;
+     return tree;
+}
+
+public void inOrder(Node root) {
+     if (root == null) {
+          return;
+     }
+
+     inOrder(root.left);
+     inOrder(root.right);
+}
+
+public BinaryTree<E> mirror() {
+     if (root == null) {
+          return null;
+     }
+
+     BinaryTree<E> mirrored = makeBinTree(root.val);
+     mirrored.left = mirror(root.right);
+     mirrored.right = mirror(root.left);
+
+     return mirrored;
+}
+
+public void prune(int level) {
+     
+}
+
+Exercise 11)
+public ArrayList<ArrayList<Integer>> paths(Node<E> lr) {
+     if (lr == null) {
+          return new ArrayList<ArrayList<Integer>>();
+     } else if (lr.isLeaf()) {
+          ArrayList<ArrayList<Integer>> result = new ArrayList<ArrayList<Integer>>();
+          result.add(new ArrayList<Integer>());
+
+          return result;
+     } else {
+          ArrayList<ArrayList<Integer>> rResult = paths(lr.right);
+
+          for (ArrayList<Integer> l : rResult) {
+               l.add(0, 1);
+          }
+
+          ArrayList<ArrayList<Integer>> lResult = paths(lr.left);
+
+          for (ArrayList<Integer> l : lResult) {
+               l.add(0, 0);
+          }
+
+          lResult.addAll(rResult);
+          return lResult;
+     }
+}
+
+public ArrayList<ArrayList<Integer>> paths() {
+     return paths(root);
+}
+
+Exercise 12)
+ArrayList<E> anc = new ArrayList<E>();
+
+public boolean findAncestors(Node node, E item) {
+     if (node == null) {
+          return false;
+     }
+
+     if (node.data == item.data) {
+          return true;
+     }
+
+     if (findAncestors(node.left, target) || findAncestors(node.right, target)) {
+          anc.add(node);
+
+          return true;
+     }
+
+     return false;
+}
+
+public ArrayList<E> ancestors(E item) {
+     boolean res = findAncestors(root, item);
+
+     if(!res) {
+          throw new NoSuchElementException();
+          return anc;
+     }
+}
+
+Exercise 13)
+ArrayList<E> trav = new ArrayList<E>();
+
+public void bfsHelper(E root) {
+     if(root == null)
+     return;
+
+     Queue<Node> q =new LinkedList<Node>();
+
+     q.add(root);
+     trav.add(root);
+
+     while(true) {
+          int nodeCount = q.size();
+
+          if (nodeCount == 0) {
+               break;
+          }
+     }
+
+     while(nodeCount > 0) {
+          Node node = q.peek();
+          trav.add(node);
+          q.remove();
+
+          if(node.left != null) {
+               q.add(node.left);
+          }
+
+          if(node.right != null) {
+               q.add(node.right);
+               nodeCount--;
+          }
+     }
+}
+
+public ArrayList<E> bfs() {
+     bfsHelper(root);
+     return trav;
+}
+
+Exercise 14)
+public ArrayList<ArrayList<E>> bfs2() {
+     Queue<TreeNode<E>> queue = new LinkedList<>();
+     ArrayList<ArrayList<E>> result = new ArrayList<>();
+
+     if (root == null) {
+          return result;
+     }
+     
+     queue.offer(root);
+
+     while (!queue.isEmpty()) {
+          int levelSize = queue.size();
+          ArrayList<E> currentLevel = new ArrayList<>();
+
+          for (int i = 0; i < levelSize; i++) {
+               TreeNode<E> currentNode = queue.poll();
+               currentLevel.add(currentNode.value);
+
+               if (currentNode.left != null) {
+                    queue.offer(currentNode.left);
+               }
+
+               if (currentNode.right != null) {
+                    queue.offer(currentNode.right);
+               }
+          }
+
+          result.add(currentLevel);
+     }
+
+     return result;
+
+     class TreeNode<E> {
+          E value;
+          TreeNode<E> left, right;
+
+          TreeNode(E value) {
+               this.value = value;
+               left = null;
+               right = null;
+          }
+     }
+}
+
+Exercise 15)
+             /50\
+        /20\     75\
+      11   /31\    /98\
+          23  39 /80  150
+                77
+
+Exercise 16)
+False; The tree can have a node missing one or more leaves missing, causing the tree to rotate but not increase in height
+
+Exercise 17)
+Lines 17 and 21 should set localRoot.left and localRoot.right to add(localRoot.left, item) and add(localRoot.right, item), respectively.
+
+Exercise 18)
+private ArrayList <BinaryTree<E>> projectLevel(int i, Node<E> current) {
+     ArrayList<BinaryTree<E>> r = newArrayList<BTree<E>>();
+
+     if (i == 0 && current != null) {
+          r.add(cloneAt(current));
+     } else {
+          if (current != null) {
+               r.addAll(projectLevel(i - 1, current.left));
+               r.addAll(projectLevel(i - 1, current.right));
+          }
+     }
+
+     return r ;
+}
+
+public ArrayList<BTree<E>> projectLevel(int i) {
+     return projectLevel(i, root);
+}
+
+Exercise 19)
+public ArrayList<BTree<E>> st() {
+     ArrayList<BTree<E>> r = new ArrayList<BTree<E>>();
+
+     for (int i = 0; i < height (); i++) {
+          r.addAll(projectLevel(i));
+     }
+
+     return r ;
+}
+
+Exercise 20)
+4 cannot be examined
+
+Exercise 21)
+1. Removed without changes
+2. "corn" replaces "cow"
